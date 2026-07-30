@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-playfair {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+  .font-inter {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .font-poppins {
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+}
+
+/* Custom Journal Theme Utility Styles */
+:root {
+  --color-primary: #081F45;
+  --color-secondary: #184A87;
+  --color-accent: #C79A3D;
+  --color-bg-light: #F6F7F9;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #222222;
+  background-color: #F6F7F9;
+}
+
+h1, h2, h3, .heading-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.subheading-garamond {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* Print styling for medical articles */
+@media print {
+  header, footer, .no-print {
+    display: none !important;
+  }
+  .article-print-body {
+    font-size: 12pt;
+    line-height: 1.6;
+    color: black;
+  }
+}
+

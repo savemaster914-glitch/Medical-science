@@ -1,0 +1,6 @@
+{
+  "name": "Iraqi Medical Journal for Biomedicine (IMJB)",
+  "description": "Quarterly peer-reviewed open-access biomedical journal published by the Department of Medical Laboratories, Al-Habbobi Teaching Hospital, Thi-Qar Health Directorate, Iraq.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
