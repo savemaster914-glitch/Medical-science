@@ -6,12 +6,14 @@ interface HeroSectionProps {
   onNavigate: (page: ActivePage) => void;
   onOpenSubmitModal: () => void;
   onOpenSearchModal: () => void;
+  onOpenTrackModal?: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onNavigate,
   onOpenSubmitModal,
   onOpenSearchModal,
+  onOpenTrackModal
 }) => {
   return (
     <section className="relative bg-[#081F45] text-white overflow-hidden border-b border-[#184A87] font-sans">
@@ -45,7 +47,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* High Density Description */}
           <p className="text-xs sm:text-sm text-slate-200 font-sans leading-relaxed max-w-2xl">
-            The Iraqi Medical Journal for Biomedicine (IMJB) is an international peer-reviewed open-access quarterly medical journal published by the Department of Medical Laboratories, Al-Habbobi Teaching Hospital, dedicated to publishing high-impact original research across biomedical sciences.
+            The Iraqi Journal of Biomedical and Clinical Medicine (IJBCM) is an international peer-reviewed open-access quarterly medical journal published by the Department of Medical Laboratories, Al-Habbobi Teaching Hospital, dedicated to publishing high-impact original research across biomedical sciences and clinical medicine.
           </p>
 
           {/* Key Metrics Quick Ribbon - Compact Grid */}
@@ -64,32 +66,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
 
-          {/* Compact Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5 pt-2">
-            <button
-              onClick={() => onNavigate('current-issue')}
-              className="flex items-center gap-1.5 bg-[#184A87] hover:bg-[#205ca7] text-white font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-sm border border-slate-400/30 transition-all shadow-xs"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-[#C79A3D]" />
-              <span>Current Issue (Vol 4, Issue 1)</span>
-            </button>
 
-            <button
-              onClick={onOpenSubmitModal}
-              className="flex items-center gap-1.5 bg-[#C79A3D] hover:bg-[#b08835] text-[#081F45] font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-sm shadow-xs transition-all"
-            >
-              <Send className="w-3.5 h-3.5 fill-current" />
-              <span>Submit Manuscript</span>
-            </button>
-
-            <button
-              onClick={onOpenSearchModal}
-              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider px-3.5 py-2 rounded-sm border border-white/20 transition-all"
-            >
-              <Search className="w-3.5 h-3.5 text-slate-300" />
-              <span>Search Database</span>
-            </button>
-          </div>
         </div>
 
         {/* Right Column Interactive Hub Card */}

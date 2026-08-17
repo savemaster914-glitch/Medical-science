@@ -33,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenSubmitModal })
             <JournalLogo size="md" className="flex-shrink-0" />
             <div>
               <p className="text-xs text-slate-300 max-w-xl font-sans leading-relaxed">
-                The <strong>Iraqi Medical Journal for Biomedicine (IMJB)</strong> is an international peer-reviewed open-access quarterly biomedical journal published by the Department of Medical Laboratories, Al-Habbobi Teaching Hospital, Dhi Qar, Iraq.
+                The <strong>Iraqi Journal of Biomedical and Clinical Medicine (IJBCM)</strong> is an international peer-reviewed open-access quarterly medical journal published by the Department of Medical Laboratories, Al-Habbobi Teaching Hospital, Dhi Qar, Iraq.
               </p>
             </div>
           </div>
@@ -171,7 +171,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenSubmitModal })
       <div className="bg-[#041126] py-3 border-t border-[#184A87] text-center text-xs text-slate-400 font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-1.5">
           <div className="text-[11px]">
-            © {new Date().getFullYear()} <strong>Iraqi Medical Journal for Biomedicine (IMJB)</strong>. Department of Medical Laboratories, Al-Habbobi Teaching Hospital.
+            © {new Date().getFullYear()} <strong>Iraqi Journal of Biomedical and Clinical Medicine (IJBCM)</strong>. Department of Medical Laboratories, Al-Habbobi Teaching Hospital.
           </div>
           <div className="flex items-center gap-3 text-[10px]">
             <span className="flex items-center gap-1 text-[#C79A3D]">

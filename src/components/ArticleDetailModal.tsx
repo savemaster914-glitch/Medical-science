@@ -36,11 +36,11 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
   if (!article) return null;
 
   const citations = {
-    APA: `${article.authors.map(a => a.name).join(', ')}. (${article.year}). ${article.title}. Iraqi Medical Journal for Biomedicine, ${article.volume}(${article.issue}), https://doi.org/${article.doi}`,
-    MLA: `${article.authors[0]?.name}, et al. "${article.title}." Iraqi Medical Journal for Biomedicine, vol. ${article.volume}, no. ${article.issue}, ${article.year}, doi:${article.doi}.`,
-    Harvard: `${article.authors.map(a => a.name).join(', ')}, ${article.year}. ${article.title}. Iraqi Medical Journal for Biomedicine, ${article.volume}(${article.issue}).`,
-    BibTeX: `@article{imjb${article.year}_${article.issue},\n  author = {${article.authors.map(a => a.name).join(' and ')}},\n  title = {${article.title}},\n  journal = {Iraqi Medical Journal for Biomedicine},\n  volume = {${article.volume}},\n  number = {${article.issue}},\n  year = {${article.year}},\n  doi = {${article.doi}}\n}`,
-    RIS: `TY  - JOUR\nTI  - ${article.title}\nAU  - ${article.authors.map(a => a.name).join('\nAU  - ')}\nJO  - Iraqi Medical Journal for Biomedicine\nVL  - ${article.volume}\nIS  - ${article.issue}\nPY  - ${article.year}\nDO  - ${article.doi}\nER  -`
+    APA: `${article.authors.map(a => a.name).join(', ')}. (${article.year}). ${article.title}. Iraqi Journal of Biomedical and Clinical Medicine, ${article.volume}(${article.issue}), https://doi.org/${article.doi}`,
+    MLA: `${article.authors[0]?.name}, et al. "${article.title}." Iraqi Journal of Biomedical and Clinical Medicine, vol. ${article.volume}, no. ${article.issue}, ${article.year}, doi:${article.doi}.`,
+    Harvard: `${article.authors.map(a => a.name).join(', ')}, ${article.year}. ${article.title}. Iraqi Journal of Biomedical and Clinical Medicine, ${article.volume}(${article.issue}).`,
+    BibTeX: `@article{ijbcm${article.year}_${article.issue},\n  author = {${article.authors.map(a => a.name).join(' and ')}},\n  title = {${article.title}},\n  journal = {Iraqi Journal of Biomedical and Clinical Medicine},\n  volume = {${article.volume}},\n  number = {${article.issue}},\n  year = {${article.year}},\n  doi = {${article.doi}}\n}`,
+    RIS: `TY  - JOUR\nTI  - ${article.title}\nAU  - ${article.authors.map(a => a.name).join('\nAU  - ')}\nJO  - Iraqi Journal of Biomedical and Clinical Medicine\nVL  - ${article.volume}\nIS  - ${article.issue}\nPY  - ${article.year}\nDO  - ${article.doi}\nER  -`
   };
 
   const handleCopyCitation = (format: string, text: string) => {
@@ -277,7 +277,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
                 {/* PDF Header Header */}
                 <div className="border-b border-slate-300 pb-4 flex justify-between items-end text-xs text-slate-500 font-sans">
                   <div>
-                    <div className="font-bold text-[#081F45] uppercase tracking-wider">Iraqi Medical Journal for Biomedicine</div>
+                    <div className="font-bold text-[#081F45] uppercase tracking-wider">Iraqi Journal of Biomedical and Clinical Medicine</div>
                     <div>Vol {article.volume}, Issue {article.issue} ({article.year}) • Open Access</div>
                   </div>
                   <div className="text-right font-mono">

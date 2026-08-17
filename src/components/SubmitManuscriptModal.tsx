@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
-import { X, Send, Upload, CheckCircle2, AlertCircle, FileText, UserCheck, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react';
-import { ArticleType, SubmissionRecord } from '../types';
+import React, { useState, useEffect } from 'react';
+import { X, Send, Upload, CheckCircle2, AlertCircle, FileText, UserCheck, ShieldCheck, ArrowRight, ArrowLeft, Mail, Search, LogIn } from 'lucide-react';
+import { ArticleType, SubmissionRecord, UserAccount } from '../types';
 
 interface SubmitManuscriptModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmitSuccess?: (newSubmission: SubmissionRecord) => void;
-  onNavigateToAdmin?: () => void;
+  onOpenEmailReceipt?: (sub: SubmissionRecord) => void;
+  onOpenTrackStatus?: (query: string) => void;
+  currentUser?: UserAccount | null;
+  onNavigateToAuth?: () => void;
 }
 
 export const SubmitManuscriptModal: React.FC<SubmitManuscriptModalProps> = ({ 
   isOpen, 
   onClose,
   onSubmitSuccess,
-  onNavigateToAdmin
+  onOpenEmailReceipt,
+  onOpenTrackStatus,
+  currentUser,
+  onNavigateToAuth
 }) => {
   const [step, setStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -31,16 +37,41 @@ export const SubmitManuscriptModal: React.FC<SubmitManuscriptModalProps> = ({
     authorInstitution: 'Al-Habbobi Teaching Hospital',
     authorOrcid: '',
     fileName: '',
+    coverLetterFileName: '',
+    titlePageFileName: '',
     agreedEthics: false,
     agreedOpenAccess: false,
     agreedOriginality: false
   });
 
+  useEffect(() => {
+    if (currentUser) {
+      setFormData(prev => ({
+        ...prev,
+        authorName: currentUser.name || prev.authorName,
+        authorEmail: currentUser.email || prev.authorEmail,
+        authorInstitution: currentUser.institution || prev.authorInstitution
+      }));
+    }
+  }, [currentUser]);
+
   if (!isOpen) return null;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleManuscriptFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, fileName: e.target.files[0].name });
+      setFormData(prev => ({ ...prev, fileName: e.target.files[0].name }));
+    }
+  };
+
+  const handleCoverLetterFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData(prev => ({ ...prev, coverLetterFileName: e.target.files[0].name }));
+    }
+  };
+
+  const handleTitlePageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData(prev => ({ ...prev, titlePageFileName: e.target.files[0].name }));
     }
   };
 
@@ -63,14 +94,16 @@ export const SubmitManuscriptModal: React.FC<SubmitManuscriptModalProps> = ({
       institution: formData.authorInstitution || 'Al-Habbobi Teaching Hospital',
       submissionDate: todayStr,
       status: 'Submitted',
-      fileName: formData.fileName || 'Manuscript_Document.docx',
+      fileName: formData.fileName || 'Main_Manuscript.docx',
+      coverLetterFileName: formData.coverLetterFileName || 'Cover_Letter.docx',
+      titlePageFileName: formData.titlePageFileName || 'Title_Page.docx',
       abstract: formData.abstract || 'Structured abstract submitted by corresponding author.',
       keywords: formData.keywords ? formData.keywords.split(',').map(k => k.trim()) : [formData.scope, 'IMJB'],
       assignedReviewers: [],
       logs: [
         {
           date: todayStr,
-          action: 'Manuscript Submitted to Admin Desk',
+          action: 'Manuscript, Cover Letter & Title Page Submitted',
           actor: formData.authorName || 'Author'
         }
       ]
@@ -138,7 +171,38 @@ export const SubmitManuscriptModal: React.FC<SubmitManuscriptModalProps> = ({
 
         {/* Content Body */}
         <div className="p-6 space-y-6 flex-1">
-          {step === 1 && (
+          {!currentUser ? (
+            <div className="py-8 px-4 text-center space-y-6 bg-slate-50 border border-slate-200 rounded-xl">
+              <div className="w-16 h-16 bg-amber-100 text-[#081F45] rounded-full flex items-center justify-center mx-auto border border-amber-300 shadow-xs">
+                <ShieldCheck className="w-8 h-8 text-[#081F45]" />
+              </div>
+              <div className="space-y-2 max-w-md mx-auto">
+                <h3 className="text-xl font-bold font-playfair text-[#081F45]">
+                  حساب باحث مطلوب أولاً / Account Registration Required
+                </h3>
+                <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                  يرجى إنشاء حساب جديد أو تسجيل الدخول باسم المستخدم وكلمة المرور للتمكن من تقديم ورفع بحثك إلى المجلة وتتبعه.
+                </p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  To maintain academic accountability and track your manuscript submission, authors must be logged into an IMJB user account.
+                </p>
+              </div>
+              <div className="pt-2 flex justify-center gap-3">
+                <button
+                  onClick={() => {
+                    onClose();
+                    if (onNavigateToAuth) onNavigateToAuth();
+                  }}
+                  className="bg-[#081F45] hover:bg-[#184A87] text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-md flex items-center gap-2 shadow-md transition-all"
+                >
+                  <LogIn className="w-4 h-4 text-[#C79A3D]" />
+                  <span>Register / Sign In Now • تسجيل الدخول</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {step === 1 && (
             <div className="space-y-4">
               <h3 className="text-base font-bold text-[#081F45] font-playfair">
                 Step 1: Select Article Classification
@@ -170,6 +234,13 @@ export const SubmitManuscriptModal: React.FC<SubmitManuscriptModalProps> = ({
                   onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-[#081F45]"
                 >
+                  <option value="1. Clinical Medicine">1. Clinical Medicine</option>
+                  <option value="2. Biomedical and Laboratory Sciences">2. Biomedical and Laboratory Sciences</option>
+                  <option value="3. Medical Physics, Biophysics, and Medical Imaging">3. Medical Physics, Biophysics, and Medical Imaging</option>
+                  <option value="4. Pharmacology and Pharmaceutical Sciences">4. Pharmacology and Pharmaceutical Sciences</option>
+                  <option value="5. Dentistry and Oral Health">5. Dentistry and Oral Health</option>
+                  <option value="6. Health Sciences and Medical Technology">6. Health Sciences and Medical Technology</option>
+                  <option value="Biomedical & Laboratory Sciences">Biomedical & Laboratory Sciences</option>
                   <option value="Medical Microbiology & Virology">Medical Microbiology & Virology</option>
                   <option value="Cancer Biology & Oncology">Cancer Biology & Oncology</option>
                   <option value="Hematology & Blood Banking">Hematology & Blood Banking</option>
@@ -292,32 +363,103 @@ export const SubmitManuscriptModal: React.FC<SubmitManuscriptModalProps> = ({
 
           {step === 3 && (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <h3 className="text-base font-bold text-[#081F45] font-playfair">
-                Step 3: Upload Manuscript & Ethical Declarations
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-bold text-[#081F45] font-playfair">
+                  Step 3: Upload Submission Files & Ethical Declarations
+                </h3>
+                <span className="text-xs text-[#081F45] font-bold bg-[#C79A3D]/20 px-2.5 py-1 rounded-xs">
+                  Attach the 3 Required Documents
+                </span>
+              </div>
 
-              {/* Upload Box */}
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center bg-slate-50 hover:bg-slate-100 transition-colors">
-                <Upload className="w-8 h-8 text-[#081F45] mx-auto mb-2" />
-                <div className="text-xs font-bold text-slate-700">
-                  {formData.fileName ? `Selected: ${formData.fileName}` : 'Upload Manuscript File (.docx / .pdf)'}
+              {/* 3 Upload Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* 1. Main Manuscript File */}
+                <div className={`border-2 border-dashed rounded-xl p-4 text-center transition-all ${
+                  formData.fileName ? 'border-emerald-500 bg-emerald-50/50' : 'border-slate-300 bg-slate-50 hover:bg-slate-100'
+                }`}>
+                  <FileText className={`w-7 h-7 mx-auto mb-1.5 ${formData.fileName ? 'text-emerald-600' : 'text-[#081F45]'}`} />
+                  <div className="text-xs font-bold text-slate-800">
+                    Main Manuscript File
+                  </div>
+                  <div className="text-[10px] text-slate-500 mb-2">
+                    (Main Manuscript - Double Blind)
+                  </div>
+                  <div className="text-[11px] font-mono text-emerald-800 bg-white/80 p-1.5 rounded border border-slate-200 truncate mb-2">
+                    {formData.fileName ? `✔️ ${formData.fileName}` : 'No file selected yet'}
+                  </div>
+                  <input
+                    type="file"
+                    accept=".docx,.pdf,.doc"
+                    onChange={handleManuscriptFileChange}
+                    className="hidden"
+                    id="manuscript-file-input"
+                  />
+                  <label
+                    htmlFor="manuscript-file-input"
+                    className="inline-block bg-[#081F45] hover:bg-[#184A87] text-white text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-colors"
+                  >
+                    {formData.fileName ? 'Change File' : 'Select Manuscript File'}
+                  </label>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1">
-                  Ensure all author names are removed from the main manuscript text for double-blind review compliance.
-                </p>
-                <input
-                  type="file"
-                  accept=".docx,.pdf,.doc"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="manuscript-file-input"
-                />
-                <label
-                  htmlFor="manuscript-file-input"
-                  className="mt-3 inline-block bg-[#081F45] text-white text-xs font-bold px-4 py-2 rounded-lg cursor-pointer hover:bg-[#184A87]"
-                >
-                  Browse Files
-                </label>
+
+                {/* 2. Cover Letter File */}
+                <div className={`border-2 border-dashed rounded-xl p-4 text-center transition-all ${
+                  formData.coverLetterFileName ? 'border-emerald-500 bg-emerald-50/50' : 'border-slate-300 bg-slate-50 hover:bg-slate-100'
+                }`}>
+                  <Upload className={`w-7 h-7 mx-auto mb-1.5 ${formData.coverLetterFileName ? 'text-emerald-600' : 'text-[#081F45]'}`} />
+                  <div className="text-xs font-bold text-slate-800">
+                    Cover Letter File
+                  </div>
+                  <div className="text-[10px] text-slate-500 mb-2">
+                    (Cover Letter Document)
+                  </div>
+                  <div className="text-[11px] font-mono text-emerald-800 bg-white/80 p-1.5 rounded border border-slate-200 truncate mb-2">
+                    {formData.coverLetterFileName ? `✔️ ${formData.coverLetterFileName}` : 'No file selected yet'}
+                  </div>
+                  <input
+                    type="file"
+                    accept=".docx,.pdf,.doc"
+                    onChange={handleCoverLetterFileChange}
+                    className="hidden"
+                    id="cover-letter-file-input"
+                  />
+                  <label
+                    htmlFor="cover-letter-file-input"
+                    className="inline-block bg-[#081F45] hover:bg-[#184A87] text-white text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-colors"
+                  >
+                    {formData.coverLetterFileName ? 'Change File' : 'Select Cover Letter'}
+                  </label>
+                </div>
+
+                {/* 3. Title Page File */}
+                <div className={`border-2 border-dashed rounded-xl p-4 text-center transition-all ${
+                  formData.titlePageFileName ? 'border-emerald-500 bg-emerald-50/50' : 'border-slate-300 bg-slate-50 hover:bg-slate-100'
+                }`}>
+                  <UserCheck className={`w-7 h-7 mx-auto mb-1.5 ${formData.titlePageFileName ? 'text-emerald-600' : 'text-[#081F45]'}`} />
+                  <div className="text-xs font-bold text-slate-800">
+                    Title Page File
+                  </div>
+                  <div className="text-[10px] text-slate-500 mb-2">
+                    (Title Page with Authors)
+                  </div>
+                  <div className="text-[11px] font-mono text-emerald-800 bg-white/80 p-1.5 rounded border border-slate-200 truncate mb-2">
+                    {formData.titlePageFileName ? `✔️ ${formData.titlePageFileName}` : 'No file selected yet'}
+                  </div>
+                  <input
+                    type="file"
+                    accept=".docx,.pdf,.doc"
+                    onChange={handleTitlePageFileChange}
+                    className="hidden"
+                    id="title-page-file-input"
+                  />
+                  <label
+                    htmlFor="title-page-file-input"
+                    className="inline-block bg-[#081F45] hover:bg-[#184A87] text-white text-xs font-bold px-3 py-1.5 rounded-md cursor-pointer transition-colors"
+                  >
+                    {formData.titlePageFileName ? 'Change File' : 'Select Title Page'}
+                  </label>
+                </div>
               </div>
 
               {/* Ethics Checkboxes */}
@@ -381,55 +523,92 @@ export const SubmitManuscriptModal: React.FC<SubmitManuscriptModalProps> = ({
           )}
 
           {step === 4 && submissionResult && (
-            <div className="text-center py-6 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+            <div className="text-center py-4 space-y-4 text-left dir-ltr">
+              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-300 shadow-sm">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-bold font-playfair text-[#081F45]">
-                Manuscript Successfully Submitted!
-              </h3>
-              <p className="text-xs text-slate-600 max-w-md mx-auto">
-                Thank you for submitting your research to the Iraqi Medical Journal for Biomedicine. Your manuscript has been logged into the editorial queue.
-              </p>
+              
+              <div className="space-y-1 text-center">
+                <h3 className="text-xl sm:text-2xl font-bold font-playfair text-[#081F45]">
+                  Manuscript Submission Successfully Received!
+                </h3>
+                <p className="text-xs text-slate-600 max-w-lg mx-auto">
+                  Your manuscript documents have been logged in the Editorial Board system for the <strong>Iraqi Journal of Biomedical and Clinical Medicine (IJBCM)</strong>. An official acknowledgment receipt has been sent to your registered email.
+                </p>
+              </div>
 
-              <div className="bg-slate-100 border border-slate-300 p-4 rounded-xl max-w-md mx-auto text-left space-y-2 text-xs">
-                <div>
-                  <span className="text-slate-500">Tracking Reference Code:</span>
-                  <div className="text-lg font-bold font-mono text-[#081F45]">
-                    {submissionResult.trackingCode}
+              {/* Submitted Details Receipt Card */}
+              <div className="bg-slate-50 border-2 border-slate-200 p-4 rounded-xl max-w-lg mx-auto text-left space-y-2 text-xs shadow-xs">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <span className="text-slate-500 font-bold">Journal Name:</span>
+                  <span className="font-bold text-[#081F45]">Iraqi Journal of Biomedical and Clinical Medicine (IJBCM)</span>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <span className="text-slate-500 font-bold">Manuscript ID:</span>
+                  <div className="text-sm font-bold font-mono text-[#081F45] bg-amber-100 px-2 py-0.5 rounded border border-amber-300">
+                    {submissionResult.id}
                   </div>
                 </div>
-                <div>
-                  <span className="text-slate-500">Title:</span>
-                  <div className="font-semibold text-slate-800">{formData.title}</div>
-                </div>
-                <div>
-                  <span className="text-slate-500">Current Status:</span>
-                  <div className="inline-block bg-blue-100 text-blue-900 font-bold px-2 py-0.5 rounded text-[10px] ml-2">
-                    Initial Editorial Check
+
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <span className="text-slate-500 font-bold">Manuscript Title:</span>
+                  <div className="font-bold text-slate-800 text-[11px] max-w-[280px] text-left dir-ltr truncate">
+                    {submissionResult.title}
                   </div>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                  <span className="text-slate-500 font-bold">Author Email:</span>
+                  <span className="font-mono text-slate-700">{submissionResult.authorEmail}</span>
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-slate-500 font-bold">Submission Date:</span>
+                  <span className="font-bold text-slate-800">{submissionResult.submissionDate}</span>
                 </div>
               </div>
 
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <button
-                  onClick={resetForm}
-                  className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-5 py-2.5 rounded-lg"
-                >
-                  إغلاق النافذة (Done & Close)
-                </button>
+              {/* Action Buttons for Email Receipt & Tracking Status */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-lg mx-auto">
                 <button
                   onClick={() => {
-                    resetForm();
-                    if (onNavigateToAdmin) onNavigateToAdmin();
+                    if (onOpenEmailReceipt && submissionResult) {
+                      onOpenEmailReceipt(submissionResult);
+                    }
                   }}
-                  className="w-full sm:w-auto bg-[#081F45] text-[#C79A3D] text-xs font-bold px-6 py-2.5 rounded-lg hover:bg-[#184A87] shadow-md flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-xs transition-colors"
                 >
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>انتقال إلى لوحة الأدمن لمشاهدة وتوجيه البحث (View in Admin)</span>
+                  <Mail className="w-4 h-4" />
+                  <span>Preview Email Receipt</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const idToTrack = submissionResult.id;
+                    resetForm();
+                    if (onOpenTrackStatus) {
+                      onOpenTrackStatus(idToTrack);
+                    }
+                  }}
+                  className="w-full sm:w-auto flex-1 bg-[#081F45] hover:bg-[#184A87] text-[#C79A3D] font-bold text-xs px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-xs transition-colors"
+                >
+                  <Search className="w-4 h-4" />
+                  <span>Track Manuscript Status</span>
+                </button>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={resetForm}
+                  className="text-slate-500 hover:text-slate-800 text-xs font-bold underline"
+                >
+                  Close Window
                 </button>
               </div>
             </div>
+          )}
+            </>
           )}
         </div>
       </div>

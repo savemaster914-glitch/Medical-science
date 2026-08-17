@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { JournalLogo } from './JournalLogo';
-import { ActivePage } from '../types';
+import { ActivePage, UserAccount } from '../types';
 import { 
   Search, 
   Send, 
@@ -8,8 +8,10 @@ import {
   X, 
   User, 
   LogIn, 
+  LogOut,
   BookOpen, 
   ShieldCheck, 
+  UserCheck,
   FileText, 
   Users, 
   Layers, 
@@ -25,6 +27,9 @@ interface NavbarProps {
   onNavigate: (page: ActivePage) => void;
   onOpenSubmitModal: () => void;
   onOpenSearchModal: () => void;
+  onOpenTrackModal?: () => void;
+  currentUser?: UserAccount | null;
+  onLogout?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -32,6 +37,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigate,
   onOpenSubmitModal,
   onOpenSearchModal,
+  onOpenTrackModal,
+  currentUser,
+  onLogout
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -42,11 +50,23 @@ export const Navbar: React.FC<NavbarProps> = ({
     setActiveDropdown(null);
   };
 
+  const getRoleBadge = (role?: string) => {
+    switch (role) {
+      case 'editor':
+        return { label: 'رئيس التحرير / Editor', color: 'bg-purple-100 text-purple-900 border-purple-300' };
+      case 'reviewer':
+        return { label: 'مقيم علمي / Reviewer', color: 'bg-emerald-100 text-emerald-900 border-emerald-300' };
+      case 'author':
+      default:
+        return { label: 'باحث / Author', color: 'bg-blue-100 text-blue-900 border-blue-300' };
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs font-sans">
       {/* Top Banner: Frequency & Access Metadata Bar */}
       <div className="bg-[#081F45] text-white text-[11px] py-1 px-4 sm:px-8 flex flex-wrap items-center justify-between gap-2 border-b border-[#184A87]">
-        <div className="flex items-center gap-2.5 font-medium">
+        <div className="flex items-center gap-2.5 font-medium flex-wrap">
           <span className="flex items-center gap-1.5 text-[#C79A3D] font-bold uppercase tracking-wider text-[10px]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C79A3D] animate-pulse"></span>
             Quarterly Peer-Reviewed Open Access
@@ -55,17 +75,33 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="hidden md:inline text-slate-200 text-[10px] uppercase tracking-wider">
             Issues: March • June • September • December
           </span>
+
+          {currentUser && (
+            <>
+              <span className="text-slate-400">|</span>
+              <div className="flex items-center gap-1.5 text-amber-300 font-bold text-[11px]">
+                <User className="w-3.5 h-3.5 text-amber-400" />
+                <span>المستخدم المسجل: {currentUser.name}</span>
+                <span className="text-[10px] text-slate-300 font-normal">
+                  ({getRoleBadge(currentUser.role).label})
+                </span>
+              </div>
+            </>
+          )}
         </div>
+
         <div className="flex items-center gap-3 text-slate-300 text-[10px] font-mono">
           <span className="hidden sm:inline">ISSN: 2958-8421 (Online)</span>
           <span className="hidden sm:inline">DOI: 10.58920/imjb</span>
-          <button 
-            onClick={() => handleNavClick('dashboard')}
-            className={`flex items-center gap-1.5 bg-[#C79A3D]/20 text-[#C79A3D] px-2.5 py-0.5 rounded-xs hover:bg-[#C79A3D] hover:text-[#081F45] transition-all font-sans text-[11px] font-bold border border-[#C79A3D]/40 ${activePage === 'dashboard' ? 'bg-[#C79A3D] text-[#081F45]' : ''}`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>لوحة الأدمن (Admin Panel)</span>
-          </button>
+          {onOpenTrackModal && (
+            <button 
+              onClick={onOpenTrackModal}
+              className="flex items-center gap-1.5 bg-[#C79A3D] text-[#081F45] px-2.5 py-0.5 rounded-xs hover:bg-amber-300 transition-all font-sans text-[11px] font-extrabold shadow-2xs"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Track Status</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -81,20 +117,66 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Action Trigger Buttons */}
         <div className="hidden lg:flex items-center gap-2">
-          <button
-            onClick={() => handleNavClick('dashboard')}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#081F45] bg-slate-100 hover:bg-[#081F45] hover:text-white border border-slate-300 rounded-sm transition-all shadow-2xs"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-[#C79A3D]" />
-            <span>لوحة الأدمن / Admin</span>
-          </button>
+          {onOpenTrackModal && (
+            <button
+              onClick={onOpenTrackModal}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#081F45] bg-amber-50 hover:bg-[#081F45] hover:text-[#C79A3D] border border-amber-300 rounded-sm transition-all shadow-2xs"
+            >
+              <Search className="w-3.5 h-3.5 text-[#081F45]" />
+              <span>Track Status</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => handleNavClick('login')}
-            className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#081F45] hover:bg-slate-100 border border-slate-300 rounded-sm transition-colors"
-          >
-            Login
-          </button>
+          {currentUser ? (
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 p-1 pl-2.5 rounded-sm shadow-2xs">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-[#081F45] text-[#C79A3D] font-bold text-xs flex items-center justify-center border border-amber-400/40">
+                  {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <div className="text-left leading-tight">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#081F45]">
+                      {currentUser.name}
+                    </span>
+                    <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-xs border ${getRoleBadge(currentUser.role).color}`}>
+                      {currentUser.role === 'editor' ? 'رئيس التحرير / Editor' : currentUser.role === 'reviewer' ? 'مقيم علمي / Reviewer' : 'باحث / Author'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 font-mono block">
+                    {currentUser.email}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleNavClick('dashboard')}
+                className="bg-[#081F45] hover:bg-[#184A87] text-[#C79A3D] text-xs font-bold px-2.5 py-1 rounded-xs flex items-center gap-1 transition-colors ml-1"
+                title="لوحة التحكم Portal"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                <span>Portal</span>
+              </button>
+
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 text-xs font-bold px-2.5 py-1 rounded-xs flex items-center gap-1 transition-all"
+                  title="تسجيل الخروج Logout"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>خروج Logout</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => handleNavClick('login')}
+              className="px-2.5 py-1.5 text-xs font-bold uppercase tracking-wider text-[#081F45] hover:bg-slate-100 border border-slate-300 rounded-sm transition-colors flex items-center gap-1"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-[#C79A3D]" />
+              <span>Register / Sign In</span>
+            </button>
+          )}
 
           <button
             onClick={onOpenSubmitModal}
@@ -295,23 +377,64 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer Navigation */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-2 shadow-2xl animate-in slide-in-from-top-2">
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => handleNavClick('dashboard')}
-              className="flex items-center justify-center gap-2 bg-[#081F45] text-[#C79A3D] font-bold py-2.5 rounded-md shadow text-xs"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>لوحة الأدمن Admin</span>
-            </button>
-            <button
-              onClick={onOpenSubmitModal}
-              className="flex items-center justify-center gap-2 bg-[#C79A3D] text-[#081F45] font-bold py-2.5 rounded-md shadow text-xs"
-            >
-              <Send className="w-4 h-4" />
-              <span>Submit Manuscript</span>
-            </button>
-          </div>
+        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-2xl animate-in slide-in-from-top-2">
+          {currentUser ? (
+            <div className="bg-slate-50 border border-slate-200 p-3 rounded-md space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-[#081F45] text-[#C79A3D] font-bold text-sm flex items-center justify-center border border-amber-400/40">
+                    {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#081F45]">{currentUser.name}</div>
+                    <div className="text-[10px] text-slate-500 font-mono">{currentUser.email}</div>
+                  </div>
+                </div>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${getRoleBadge(currentUser.role).color}`}>
+                  {currentUser.role === 'editor' ? 'رئيس التحرير' : currentUser.role === 'reviewer' ? 'مقيم علمي' : 'باحث'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button
+                  onClick={() => handleNavClick('dashboard')}
+                  className="flex items-center justify-center gap-1.5 bg-[#081F45] text-[#C79A3D] font-bold py-2 rounded-md text-xs"
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  <span>لوحة التحكم</span>
+                </button>
+                {onLogout && (
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      onLogout();
+                    }}
+                    className="flex items-center justify-center gap-1.5 bg-red-600 text-white font-bold py-2 rounded-md text-xs"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>تسجيل الخروج</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => handleNavClick('login')}
+                className="flex items-center justify-center gap-2 bg-[#081F45] text-white font-bold py-2.5 rounded-md shadow text-xs"
+              >
+                <UserCheck className="w-4 h-4 text-[#C79A3D]" />
+                <span>Register / Sign In</span>
+              </button>
+              <button
+                onClick={onOpenSubmitModal}
+                className="flex items-center justify-center gap-2 bg-[#C79A3D] text-[#081F45] font-bold py-2.5 rounded-md shadow text-xs"
+              >
+                <Send className="w-4 h-4" />
+                <span>Submit Manuscript</span>
+              </button>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-1 pt-2 text-sm font-medium">
             <button

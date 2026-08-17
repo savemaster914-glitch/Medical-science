@@ -92,15 +92,41 @@ export interface Announcement {
   isUrgent?: boolean;
 }
 
+export interface ReviewerAttachment {
+  fileName: string;
+  fileSize?: string;
+  fileType?: string;
+  uploadedAt: string;
+  fileDataUrl?: string;
+}
+
 export interface AssignedReviewer {
   id: string;
   name: string;
   institution: string;
   email: string;
+  username?: string;
+  password?: string;
   specialty: string;
   status: 'Pending' | 'Accepted' | 'Completed' | 'Declined';
   recommendation?: 'Accept' | 'Minor Revision' | 'Major Revision' | 'Reject';
   dueDate?: string;
+  commentsToEditor?: string;
+  commentsToAuthor?: string;
+  attachedFile?: ReviewerAttachment;
+  evaluationDate?: string;
+}
+
+export interface UserAccount {
+  id: string;
+  username: string;
+  email: string;
+  password: string;
+  name: string;
+  role: 'editor' | 'reviewer' | 'author';
+  reviewerId?: string; // Links to AssignedReviewer if role === 'reviewer'
+  specialty?: string;
+  institution?: string;
 }
 
 export interface EditorialLog {
@@ -122,6 +148,8 @@ export interface SubmissionRecord {
   submissionDate: string;
   status: 'Submitted' | 'Initial Check' | 'Under Review' | 'Revision Required' | 'Accepted' | 'Rejected' | 'Published';
   fileName?: string;
+  coverLetterFileName?: string;
+  titlePageFileName?: string;
   abstract?: string;
   keywords?: string[];
   assignedReviewers?: AssignedReviewer[];

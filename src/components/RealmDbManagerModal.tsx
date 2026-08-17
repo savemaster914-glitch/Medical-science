@@ -56,7 +56,7 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
       a.download = `IMJB_RealmDB_Backup_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      setStatusMsg('تم تصدير قاعدة البيانات بنجاح (Database exported as JSON)');
+      setStatusMsg('Database exported successfully as JSON');
       setTimeout(() => setStatusMsg(null), 4000);
     } catch (e) {
       console.error(e);
@@ -64,13 +64,13 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
   };
 
   const handleResetDB = async () => {
-    if (confirm('هل أنت تأكد من إعادة تهيئة قاعدة البيانات المحلية Realm DB بالأبحاث النموذجية؟')) {
+    if (confirm('Are you sure you want to reset the local Realm DB to initial seed manuscripts?')) {
       setIsLoading(true);
       const resetList = await clearAndResetRealmDB();
       await loadData();
       onSubmissionsUpdated(resetList);
       setIsLoading(false);
-      setStatusMsg('تمت إعادة تهيئة قاعدة البيانات المحلية (Realm DB Reset Completed)');
+      setStatusMsg('Local database reset completed successfully');
       setTimeout(() => setStatusMsg(null), 4000);
     }
   };
@@ -86,7 +86,7 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-bold text-base text-white">إدارة قاعدة البيانات المحلية Realm DB / IndexedDB</h2>
+                <h2 className="font-bold text-base text-white">Local Realm DB / IndexedDB Manager</h2>
                 <span className="text-[10px] bg-green-500/20 text-green-300 font-mono px-2 py-0.5 rounded border border-green-500/30">
                   ● ACTIVE ONLINE
                 </span>
@@ -117,19 +117,19 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
         {/* Database Quick Stats bar */}
         <div className="bg-slate-50 border-b border-slate-200 p-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
           <div className="bg-white p-2.5 rounded border border-slate-200 shadow-2xs">
-            <div className="text-slate-500 text-[11px] font-medium">اسم المحرك (DB Engine)</div>
+            <div className="text-slate-500 text-[11px] font-medium">DB Engine</div>
             <div className="font-bold text-[#081F45] font-mono text-xs mt-0.5">IndexedDB / Dexie Realm</div>
           </div>
           <div className="bg-white p-2.5 rounded border border-slate-200 shadow-2xs">
-            <div className="text-slate-500 text-[11px] font-medium">عدد الأبحاث (Submissions)</div>
+            <div className="text-slate-500 text-[11px] font-medium">Submissions</div>
             <div className="font-extrabold text-[#C79A3D] text-sm mt-0.5">{dbSubmissions.length} record(s)</div>
           </div>
           <div className="bg-white p-2.5 rounded border border-slate-200 shadow-2xs">
-            <div className="text-slate-500 text-[11px] font-medium">المحكمون المسجلون (Reviewers)</div>
+            <div className="text-slate-500 text-[11px] font-medium">Registered Reviewers</div>
             <div className="font-bold text-[#081F45] text-sm mt-0.5">{dbReviewers.length} reviewer(s)</div>
           </div>
           <div className="bg-white p-2.5 rounded border border-slate-200 shadow-2xs">
-            <div className="text-slate-500 text-[11px] font-medium">سجلات العمليات (Audit Logs)</div>
+            <div className="text-slate-500 text-[11px] font-medium">Audit Logs</div>
             <div className="font-bold text-slate-700 text-sm mt-0.5">{dbLogs.length} log event(s)</div>
           </div>
         </div>
@@ -145,7 +145,7 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
             }`}
           >
             <FileText className="w-4 h-4 text-[#C79A3D]" />
-            <span>جدول الأبحاث (Submissions Table)</span>
+            <span>Submissions Table</span>
           </button>
           <button
             onClick={() => setActiveTab('reviewers')}
@@ -156,7 +156,7 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
             }`}
           >
             <Users className="w-4 h-4 text-[#081F45]" />
-            <span>جدول المحكمين (Reviewers Table)</span>
+            <span>Reviewers Table</span>
           </button>
           <button
             onClick={() => setActiveTab('logs')}
@@ -167,7 +167,7 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
             }`}
           >
             <Activity className="w-4 h-4 text-emerald-600" />
-            <span>سجل النظام (Logs Table)</span>
+            <span>System Logs Table</span>
           </button>
         </div>
 
@@ -176,7 +176,7 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
           {isLoading ? (
             <div className="flex items-center justify-center py-16 text-slate-500 gap-2">
               <RefreshCw className="w-5 h-5 animate-spin text-[#081F45]" />
-              <span className="text-xs font-semibold">جاري قراءة الجداول من Realm DB...</span>
+              <span className="text-xs font-semibold">Reading tables from Realm DB...</span>
             </div>
           ) : activeTab === 'submissions' ? (
             <div className="overflow-x-auto">
@@ -275,21 +275,21 @@ export const RealmDbManagerModal: React.FC<RealmDbManagerModalProps> = ({
               className="bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-bold text-xs px-3 py-1.5 rounded-xs shadow-2xs flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5 text-[#081F45]" />
-              <span>تصدير نسخه إحتياطية JSON (Export Backup)</span>
+              <span>Export JSON Backup</span>
             </button>
             <button
               onClick={handleResetDB}
               className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs px-3 py-1.5 rounded-xs flex items-center gap-1.5"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>إعادة تهيئة البيانات (Reset Seed)</span>
+              <span>Reset DB Seed</span>
             </button>
           </div>
           <button
             onClick={onClose}
             className="bg-[#081F45] hover:bg-[#184A87] text-white font-bold text-xs px-5 py-1.5 rounded-xs"
           >
-            إغلاق النافذة
+            Close Window
           </button>
         </div>
       </div>

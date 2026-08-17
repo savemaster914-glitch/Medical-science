@@ -52,7 +52,7 @@ export const initRealmDatabase = async (): Promise<SubmissionRecord[]> => {
       await realmDB.journalSettings.put({
         key: 'journal_info',
         value: {
-          title: 'Iraqi Medical Journal for Biomedicine',
+          title: 'Iraqi Journal of Biomedical and Clinical Medicine',
           publisher: 'Al-Habbobi Teaching Hospital',
           volume: 4,
           issue: 2,

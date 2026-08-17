@@ -1,8 +1,8 @@
 import { Article, EditorialBoardMember, JournalIssue, Announcement } from '../types';
 
 export const JOURNAL_INFO = {
-  name: "Iraqi Medical Journal for Biomedicine",
-  abbreviation: "IMJB",
+  name: "Iraqi Journal of Biomedical and Clinical Medicine",
+  abbreviation: "IJBCM",
   publisher: "Department of Medical Laboratories",
   institution: "Al-Habbobi Teaching Hospital",
   directorate: "Thi-Qar Health Directorate",
@@ -140,9 +140,9 @@ export const MOCK_ARTICLES: Article[] = [
 <article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.2" xml:lang="en">
   <front>
     <journal-meta>
-      <journal-id journal-id-type="publisher-id">IMJB</journal-id>
+      <journal-id journal-id-type="publisher-id">IJBCM</journal-id>
       <journal-title-group>
-        <journal-title>Iraqi Medical Journal for Biomedicine</journal-title>
+        <journal-title>Iraqi Journal of Biomedical and Clinical Medicine</journal-title>
       </journal-title-group>
       <issn pub-type="epub">2958-8421</issn>
       <publisher>
@@ -423,7 +423,7 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
     title: "Call for Papers: Volume 4, Issue 2 (June 2026) - Deadline: April 30, 2026",
     date: "March 15, 2026",
     category: "Call for Papers",
-    content: "The Iraqi Medical Journal for Biomedicine (IMJB) invites high-quality original research articles, review papers, and short communications for the upcoming quarterly issue (Volume 4, Issue 2 - June 2026). Authors are encouraged to submit manuscripts through our online manuscript portal.",
+    content: "The Iraqi Journal of Biomedical and Clinical Medicine (IJBCM) invites high-quality original research articles, review papers, and short communications for the upcoming quarterly issue (Volume 4, Issue 2 - June 2026). Authors are encouraged to submit manuscripts through our online manuscript portal.",
     linkText: "Submit Manuscript Now",
     isUrgent: true
   },
@@ -432,7 +432,7 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
     title: "Special Issue Announcement: 'Molecular Diagnostics & AI in Tropical & Infectious Diseases'",
     date: "March 10, 2026",
     category: "Special Issue",
-    content: "IMJB announces a dedicated Special Issue focusing on modern molecular diagnostics (qPCR, NGS, CRISPR-Cas) and artificial intelligence applications in managing endemic infectious diseases in the Middle East.",
+    content: "IJBCM announces a dedicated Special Issue focusing on modern molecular diagnostics (qPCR, NGS, CRISPR-Cas) and artificial intelligence applications in managing endemic infectious diseases in the Middle East.",
     linkText: "View Special Issue Details"
   },
   {
@@ -448,7 +448,7 @@ export const MOCK_ANNOUNCEMENTS: Announcement[] = [
     title: "Invitation for International Peer Reviewers in Pathology, Microbiology & AI",
     date: "February 20, 2026",
     category: "Reviewer Invitation",
-    content: "IMJB is expanding its international reviewer database. Qualified biomedical researchers holding a PhD or MD are invited to register as peer reviewers.",
+    content: "IJBCM is expanding its international reviewer database. Qualified biomedical researchers holding a PhD or MD are invited to register as peer reviewers.",
     linkText: "Register as Reviewer"
   }
 ];

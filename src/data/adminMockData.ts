@@ -80,7 +80,16 @@ export const INITIAL_ADMIN_SUBMISSIONS: SubmissionRecord[] = [
         email: "tariq.aljanabi@med.uobaghdad.edu.iq",
         specialty: "Medical Microbiology & Virology",
         status: "Completed",
-        recommendation: "Accept"
+        recommendation: "Accept",
+        evaluationDate: "March 25, 2026",
+        commentsToEditor: "The manuscript is methodologically robust. The multiplex RT-PCR primers for blaNDM and blaOXA-48 are well-validated.",
+        commentsToAuthor: "Excellent study providing valuable local surveillance data for Thi-Qar ICU isolates.",
+        attachedFile: {
+          fileName: "Evaluation_Report_Prof_AlJanabi.pdf",
+          fileSize: "1.4 MB",
+          fileType: "application/pdf",
+          uploadedAt: "March 25, 2026"
+        }
       },
       {
         id: "REV-103",

@@ -57,10 +57,10 @@ export const JournalLogo: React.FC<JournalLogoProps> = ({
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">
             <span className="font-playfair font-bold text-[#081F45] tracking-tight leading-none text-base sm:text-lg">
-              Iraqi Medical Journal for Biomedicine
+              Iraqi Journal of Biomedical and Clinical Medicine
             </span>
             <span className="bg-[#C79A3D]/20 text-[#081F45] text-xs font-semibold px-1.5 py-0.5 rounded border border-[#C79A3D]/40">
-              IMJB
+              IJBCM
             </span>
           </div>
           <span className="text-[11px] font-medium text-slate-500 leading-tight mt-0.5">
